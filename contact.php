@@ -57,19 +57,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // 5. Action upon Successful Validation
         if (empty($errors)) {
-            /*
-             * Example email dispatch in production:
-             *
-             * $to = 'your-email@example.com';
-             * $mail_subject = "Contact Form: $subject";
-             * $mail_body = "From: $name <$email>\n\nSubject: $subject\n\nMessage:\n$message";
-             * $headers = [
-             *     'From' => 'no-reply@yourdomain.com',
-             *     'Reply-To' => $email,
-             *     'X-Mailer' => 'PHP/' . phpversion()
-             * ];
-             * mail($to, $mail_subject, $mail_body, $headers);
-             */
+            // Append contact data to CSV file for testing
+            $csvFile = __DIR__ . '/contacts.csv';
+            $isNewFile = !file_exists($csvFile) || filesize($csvFile) === 0;
+
+            $handle = @fopen($csvFile, 'a');
+            if ($handle !== false) {
+                // If this is a newly created file, add headers first
+                if ($isNewFile) {
+                    fputcsv($handle, ['Date & Time', 'Full Name', 'Email Address', 'Subject', 'Message', 'IP Address']);
+                }
+
+                // Write the submission record
+                fputcsv($handle, [
+                    date('Y-m-d H:i:s'),
+                    $name,
+                    $email,
+                    $subject,
+                    $message,
+                    $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'
+                ]);
+
+                fclose($handle);
+            } else {
+                error_log("Failed to open $csvFile for writing.");
+            }
 
             $success = true;
 
