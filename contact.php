@@ -11,6 +11,7 @@ $errors = [];
 $success = false;
 $name = '';
 $email = '';
+$company = '';
 $subject = '';
 $message = '';
 
@@ -29,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 3. Collect & Sanitize Form Inputs
         $name    = trim($_POST['name'] ?? '');
         $email   = trim($_POST['email'] ?? '');
+        $company = trim($_POST['company'] ?? '');
         $subject = trim($_POST['subject'] ?? '');
         $message = trim($_POST['message'] ?? '');
 
@@ -65,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($handle !== false) {
                 // If this is a newly created file, add headers first
                 if ($isNewFile) {
-                    fputcsv($handle, ['Date & Time', 'Full Name', 'Email Address', 'Subject', 'Message', 'IP Address']);
+                    fputcsv($handle, ['Date & Time', 'Full Name', 'Email Address', 'Company Name', 'Subject', 'Message', 'IP Address']);
                 }
 
                 // Write the submission record
@@ -73,6 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     date('Y-m-d H:i:s'),
                     $name,
                     $email,
+                    $company,
                     $subject,
                     $message,
                     $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'
@@ -91,6 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Clear values for fresh form
             $name = '';
             $email = '';
+            $company = '';
             $subject = '';
             $message = '';
         }
@@ -282,33 +286,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
         </div>
 
-        <!-- Subject -->
-        <div class="form-group">
-          <label for="subject" class="form-label">
-            <span>Subject</span>
-            <span class="required" aria-hidden="true">*</span>
-          </label>
-          <div class="input-container">
-            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-            </svg>
-            <select 
-              name="subject" 
-              id="subject" 
-              class="form-control <?php echo isset($errors['subject']) ? 'has-error' : ''; ?>" 
-              required
-            >
-              <option value="" disabled <?php echo empty($subject) ? 'selected' : ''; ?>>Select a topic...</option>
-              <option value="General Inquiry" <?php echo $subject === 'General Inquiry' ? 'selected' : ''; ?>>General Inquiry</option>
-              <option value="Sales & Pricing" <?php echo $subject === 'Sales & Pricing' ? 'selected' : ''; ?>>Sales & Pricing</option>
-              <option value="Technical Support" <?php echo $subject === 'Technical Support' ? 'selected' : ''; ?>>Technical Support</option>
-              <option value="Project Collaboration" <?php echo $subject === 'Project Collaboration' ? 'selected' : ''; ?>>Project Collaboration</option>
-              <option value="Feedback / Other" <?php echo $subject === 'Feedback / Other' ? 'selected' : ''; ?>>Feedback / Other</option>
-            </select>
+        <!-- Company & Subject Row -->
+        <div class="form-row">
+          <!-- Company Name -->
+          <div class="form-group">
+            <label for="company" class="form-label">
+              <span>Company Name</span>
+            </label>
+            <div class="input-container">
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+              <input 
+                type="text" 
+                name="company" 
+                id="company" 
+                class="form-control" 
+                placeholder="Acme Inc. (Optional)" 
+                value="<?php echo htmlspecialchars($company); ?>" 
+                autocomplete="organization"
+              >
+            </div>
           </div>
-          <?php if (isset($errors['subject'])): ?>
-            <span class="field-error"><?php echo htmlspecialchars($errors['subject']); ?></span>
-          <?php endif; ?>
+
+          <!-- Subject -->
+          <div class="form-group">
+            <label for="subject" class="form-label">
+              <span>Subject</span>
+              <span class="required" aria-hidden="true">*</span>
+            </label>
+            <div class="input-container">
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              </svg>
+              <select 
+                name="subject" 
+                id="subject" 
+                class="form-control <?php echo isset($errors['subject']) ? 'has-error' : ''; ?>" 
+                required
+              >
+                <option value="" disabled <?php echo empty($subject) ? 'selected' : ''; ?>>Select a topic...</option>
+                <option value="General Inquiry" <?php echo $subject === 'General Inquiry' ? 'selected' : ''; ?>>General Inquiry</option>
+                <option value="Sales & Pricing" <?php echo $subject === 'Sales & Pricing' ? 'selected' : ''; ?>>Sales & Pricing</option>
+                <option value="Technical Support" <?php echo $subject === 'Technical Support' ? 'selected' : ''; ?>>Technical Support</option>
+                <option value="Project Collaboration" <?php echo $subject === 'Project Collaboration' ? 'selected' : ''; ?>>Project Collaboration</option>
+                <option value="Feedback / Other" <?php echo $subject === 'Feedback / Other' ? 'selected' : ''; ?>>Feedback / Other</option>
+              </select>
+            </div>
+            <?php if (isset($errors['subject'])): ?>
+              <span class="field-error"><?php echo htmlspecialchars($errors['subject']); ?></span>
+            <?php endif; ?>
+          </div>
         </div>
 
         <!-- Message Body -->
