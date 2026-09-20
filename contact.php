@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="card-content">
               <h3>Direct Email</h3>
-              <p><a href="mailto:support@stallionindia.com">[EMAIL_ADDRESS]</a></p>
+              <p><a href="mailto:support@stallionindia.com">support@stallionindia.com</a></p>
             </div>
           </div>
 
@@ -170,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="card-content">
               <h3>Call Us</h3>
-              <p><a href="tel:+15551234567">+1 (555) 123-4567</a></p>
+              <p><a href="tel:+91 9846575777">+91 9846575777</a></p>
             </div>
           </div>
 
