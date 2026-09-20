@@ -12,6 +12,7 @@ $success = false;
 $name = '';
 $email = '';
 $company = '';
+$designation = '';
 $subject = '';
 $message = '';
 
@@ -28,11 +29,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // 3. Collect & Sanitize Form Inputs
-        $name    = trim($_POST['name'] ?? '');
-        $email   = trim($_POST['email'] ?? '');
-        $company = trim($_POST['company'] ?? '');
-        $subject = trim($_POST['subject'] ?? '');
-        $message = trim($_POST['message'] ?? '');
+        $name        = trim($_POST['name'] ?? '');
+        $email       = trim($_POST['email'] ?? '');
+        $company     = trim($_POST['company'] ?? '');
+        $designation = trim($_POST['designation'] ?? '');
+        $subject     = trim($_POST['subject'] ?? '');
+        $message     = trim($_POST['message'] ?? '');
 
         // 4. Validate Inputs
         if (empty($name)) {
@@ -67,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($handle !== false) {
                 // If this is a newly created file, add headers first
                 if ($isNewFile) {
-                    fputcsv($handle, ['Date & Time', 'Full Name', 'Email Address', 'Company Name', 'Subject', 'Message', 'IP Address']);
+                    fputcsv($handle, ['Date & Time', 'Full Name', 'Email Address', 'Company Name', 'Designation', 'Subject', 'Message', 'IP Address']);
                 }
 
                 // Write the submission record
@@ -76,6 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $name,
                     $email,
                     $company,
+                    $designation,
                     $subject,
                     $message,
                     $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'
@@ -95,6 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = '';
             $email = '';
             $company = '';
+            $designation = '';
             $subject = '';
             $message = '';
         }
@@ -286,7 +290,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
         </div>
 
-        <!-- Company & Subject Row -->
+        <!-- Company & Designation Row -->
         <div class="form-row">
           <!-- Company Name -->
           <div class="form-group">
@@ -309,34 +313,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
           </div>
 
-          <!-- Subject -->
+          <!-- Designation -->
           <div class="form-group">
-            <label for="subject" class="form-label">
-              <span>Subject</span>
-              <span class="required" aria-hidden="true">*</span>
+            <label for="designation" class="form-label">
+              <span>Designation</span>
             </label>
             <div class="input-container">
               <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
-              <select 
-                name="subject" 
-                id="subject" 
-                class="form-control <?php echo isset($errors['subject']) ? 'has-error' : ''; ?>" 
-                required
+              <input 
+                type="text" 
+                name="designation" 
+                id="designation" 
+                class="form-control" 
+                placeholder="e.g. Product Manager (Optional)" 
+                value="<?php echo htmlspecialchars($designation); ?>" 
+                autocomplete="organization-title"
               >
-                <option value="" disabled <?php echo empty($subject) ? 'selected' : ''; ?>>Select a topic...</option>
-                <option value="General Inquiry" <?php echo $subject === 'General Inquiry' ? 'selected' : ''; ?>>General Inquiry</option>
-                <option value="Sales & Pricing" <?php echo $subject === 'Sales & Pricing' ? 'selected' : ''; ?>>Sales & Pricing</option>
-                <option value="Technical Support" <?php echo $subject === 'Technical Support' ? 'selected' : ''; ?>>Technical Support</option>
-                <option value="Project Collaboration" <?php echo $subject === 'Project Collaboration' ? 'selected' : ''; ?>>Project Collaboration</option>
-                <option value="Feedback / Other" <?php echo $subject === 'Feedback / Other' ? 'selected' : ''; ?>>Feedback / Other</option>
-              </select>
             </div>
-            <?php if (isset($errors['subject'])): ?>
-              <span class="field-error"><?php echo htmlspecialchars($errors['subject']); ?></span>
-            <?php endif; ?>
           </div>
+        </div>
+
+        <!-- Subject -->
+        <div class="form-group">
+          <label for="subject" class="form-label">
+            <span>Subject</span>
+            <span class="required" aria-hidden="true">*</span>
+          </label>
+          <div class="input-container">
+            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            </svg>
+            <select 
+              name="subject" 
+              id="subject" 
+              class="form-control <?php echo isset($errors['subject']) ? 'has-error' : ''; ?>" 
+              required
+            >
+              <option value="" disabled <?php echo empty($subject) ? 'selected' : ''; ?>>Select a topic...</option>
+              <option value="General Inquiry" <?php echo $subject === 'General Inquiry' ? 'selected' : ''; ?>>General Inquiry</option>
+              <option value="Sales & Pricing" <?php echo $subject === 'Sales & Pricing' ? 'selected' : ''; ?>>Sales & Pricing</option>
+              <option value="Technical Support" <?php echo $subject === 'Technical Support' ? 'selected' : ''; ?>>Technical Support</option>
+              <option value="Project Collaboration" <?php echo $subject === 'Project Collaboration' ? 'selected' : ''; ?>>Project Collaboration</option>
+              <option value="Feedback / Other" <?php echo $subject === 'Feedback / Other' ? 'selected' : ''; ?>>Feedback / Other</option>
+            </select>
+          </div>
+          <?php if (isset($errors['subject'])): ?>
+            <span class="field-error"><?php echo htmlspecialchars($errors['subject']); ?></span>
+          <?php endif; ?>
         </div>
 
         <!-- Message Body -->
