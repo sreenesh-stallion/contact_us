@@ -11,6 +11,7 @@ $errors = [];
 $success = false;
 $name = '';
 $email = '';
+$contact_number = '';
 $company = '';
 $designation = '';
 $subject = '';
@@ -29,12 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // 3. Collect & Sanitize Form Inputs
-        $name        = trim($_POST['name'] ?? '');
-        $email       = trim($_POST['email'] ?? '');
-        $company     = trim($_POST['company'] ?? '');
-        $designation = trim($_POST['designation'] ?? '');
-        $subject     = trim($_POST['subject'] ?? '');
-        $message     = trim($_POST['message'] ?? '');
+        $name           = trim($_POST['name'] ?? '');
+        $email          = trim($_POST['email'] ?? '');
+        $contact_number = trim($_POST['contact_number'] ?? '');
+        $company        = trim($_POST['company'] ?? '');
+        $designation    = trim($_POST['designation'] ?? '');
+        $subject        = trim($_POST['subject'] ?? '');
+        $message        = trim($_POST['message'] ?? '');
 
         // 4. Validate Inputs
         if (empty($name)) {
@@ -69,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($handle !== false) {
                 // If this is a newly created file, add headers first
                 if ($isNewFile) {
-                    fputcsv($handle, ['Date & Time', 'Full Name', 'Email Address', 'Company Name', 'Designation', 'Subject', 'Message', 'IP Address']);
+                    fputcsv($handle, ['Date & Time', 'Full Name', 'Email Address', 'Contact Number', 'Company Name', 'Designation', 'Subject', 'Message', 'IP Address']);
                 }
 
                 // Write the submission record
@@ -77,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     date('Y-m-d H:i:s'),
                     $name,
                     $email,
+                    $contact_number,
                     $company,
                     $designation,
                     $subject,
@@ -97,6 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Clear values for fresh form
             $name = '';
             $email = '';
+            $contact_number = '';
             $company = '';
             $designation = '';
             $subject = '';
@@ -290,6 +294,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
         </div>
 
+        <!-- Contact Number & Subject Row -->
+        <div class="form-row">
+          <!-- Contact Number -->
+          <div class="form-group">
+            <label for="contact_number" class="form-label">
+              <span>Contact Number</span>
+            </label>
+            <div class="input-container">
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              <input 
+                type="tel" 
+                name="contact_number" 
+                id="contact_number" 
+                class="form-control" 
+                placeholder="+1 (555) 123-4567 (Optional)" 
+                value="<?php echo htmlspecialchars($contact_number); ?>" 
+                autocomplete="tel"
+              >
+            </div>
+          </div>
+
+          <!-- Subject -->
+          <div class="form-group">
+            <label for="subject" class="form-label">
+              <span>Subject</span>
+              <span class="required" aria-hidden="true">*</span>
+            </label>
+            <div class="input-container">
+              <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              </svg>
+              <select 
+                name="subject" 
+                id="subject" 
+                class="form-control <?php echo isset($errors['subject']) ? 'has-error' : ''; ?>" 
+                required
+              >
+                <option value="" disabled <?php echo empty($subject) ? 'selected' : ''; ?>>Select a topic...</option>
+                <option value="General Inquiry" <?php echo $subject === 'General Inquiry' ? 'selected' : ''; ?>>General Inquiry</option>
+                <option value="Sales & Pricing" <?php echo $subject === 'Sales & Pricing' ? 'selected' : ''; ?>>Sales & Pricing</option>
+                <option value="Technical Support" <?php echo $subject === 'Technical Support' ? 'selected' : ''; ?>>Technical Support</option>
+                <option value="Project Collaboration" <?php echo $subject === 'Project Collaboration' ? 'selected' : ''; ?>>Project Collaboration</option>
+                <option value="Feedback / Other" <?php echo $subject === 'Feedback / Other' ? 'selected' : ''; ?>>Feedback / Other</option>
+              </select>
+            </div>
+            <?php if (isset($errors['subject'])): ?>
+              <span class="field-error"><?php echo htmlspecialchars($errors['subject']); ?></span>
+            <?php endif; ?>
+          </div>
+        </div>
+
         <!-- Company & Designation Row -->
         <div class="form-row">
           <!-- Company Name -->
@@ -333,35 +390,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               >
             </div>
           </div>
-        </div>
-
-        <!-- Subject -->
-        <div class="form-group">
-          <label for="subject" class="form-label">
-            <span>Subject</span>
-            <span class="required" aria-hidden="true">*</span>
-          </label>
-          <div class="input-container">
-            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-            </svg>
-            <select 
-              name="subject" 
-              id="subject" 
-              class="form-control <?php echo isset($errors['subject']) ? 'has-error' : ''; ?>" 
-              required
-            >
-              <option value="" disabled <?php echo empty($subject) ? 'selected' : ''; ?>>Select a topic...</option>
-              <option value="General Inquiry" <?php echo $subject === 'General Inquiry' ? 'selected' : ''; ?>>General Inquiry</option>
-              <option value="Sales & Pricing" <?php echo $subject === 'Sales & Pricing' ? 'selected' : ''; ?>>Sales & Pricing</option>
-              <option value="Technical Support" <?php echo $subject === 'Technical Support' ? 'selected' : ''; ?>>Technical Support</option>
-              <option value="Project Collaboration" <?php echo $subject === 'Project Collaboration' ? 'selected' : ''; ?>>Project Collaboration</option>
-              <option value="Feedback / Other" <?php echo $subject === 'Feedback / Other' ? 'selected' : ''; ?>>Feedback / Other</option>
-            </select>
-          </div>
-          <?php if (isset($errors['subject'])): ?>
-            <span class="field-error"><?php echo htmlspecialchars($errors['subject']); ?></span>
-          <?php endif; ?>
         </div>
 
         <!-- Message Body -->
