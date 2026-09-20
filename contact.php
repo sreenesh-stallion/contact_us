@@ -183,8 +183,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               </svg>
             </div>
             <div class="card-content">
-              <h3>Headquarters</h3>
-              <p>100 Innovation Way, Suite 400<br>San Francisco, CA 94107</p>
+              <h3>Stallion House</h3>
+              <p>Padam Stop. KP Vallon Road, Kochi Kerala.</p>
             </div>
           </div>
         </div>
