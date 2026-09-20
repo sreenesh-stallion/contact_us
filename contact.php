@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="card-content">
               <h3>Direct Email</h3>
-              <p><a href="mailto:support@example.com">support@example.com</a></p>
+              <p><a href="mailto:support@stallionindia.com">[EMAIL_ADDRESS]</a></p>
             </div>
           </div>
 
